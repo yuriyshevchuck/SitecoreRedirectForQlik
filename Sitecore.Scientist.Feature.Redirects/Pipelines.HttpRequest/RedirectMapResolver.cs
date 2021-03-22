@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
+using System.Text.RegularExpressions;
 
 namespace Sitecore.Scientist.Feature.Redirects.Pipelines.HttpRequest
 {
@@ -211,6 +212,10 @@ namespace Sitecore.Scientist.Feature.Redirects.Pipelines.HttpRequest
                 return;
             }
             string str = this.EnsureSlashes(Context.Request.FilePath.ToLower());
+            var lang = Context.Language.Name == "en" ? "us" : Context.Language.Name;
+            //Log.Error($"Method => Process / str => {str}", this);
+            //Log.Error($"Method => Process / Context.Language.Name => {lang}", this);
+            str = Regex.Split(str, $"/{lang}", RegexOptions.IgnoreCase).LastOrDefault();
             RedirectMapping resolvedMapping = this.GetResolvedMapping(str);
             bool flag = resolvedMapping != null;
             if (resolvedMapping == null)
